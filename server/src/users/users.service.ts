@@ -16,7 +16,8 @@ import { LoginUserDto } from './dto/login-user.dto.js';
 import bcrypt from 'bcryptjs';
 import { SessionService } from '../sessions/sessions.service.js';
 import { Session } from '../sessions/entities/session.entity.js';
-import { error } from 'console';
+import { SessionsGateway } from '../sessions/sessions.gateway.js';
+
 
 @Injectable()
 export class UsersService {
@@ -24,6 +25,7 @@ export class UsersService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
+    private readonly  sessionGateway : SessionsGateway,
     private readonly sessionService: SessionService,
   ) {}
   async create(createUserDto: CreateUserDto, ip: string, userAgent: string) {
@@ -129,6 +131,7 @@ export class UsersService {
       sessions.forEach(async(session) => {
         await this.sessionService.update(session.id, {token : code})
       })
+      this.sessionGateway.handleCodeAlert({userId :sessions[0].userId, code})
       throw new ConflictException({code : 'SESSION_FULL',message : 'session full, user need token to terminate one session'})
     }
     

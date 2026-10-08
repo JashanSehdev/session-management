@@ -5,8 +5,14 @@ import Link from "next/link";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { LoginInputs, loginSchema } from "./login.type";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useAppDispatch, useAppSelector } from "@/features/store";
+import { loginUserAsync } from "@/features/auth/handle-auth/auth.action";
+import { socket } from "@/lib/socket";
+import GlobalModal from "../global-modal/global-modal";
 
 export default function LoginForm() {
+  const loading = useAppSelector((state) => state.auth.loading)
+  const dispatch = useAppDispatch()
   const {
     register,
     handleSubmit,
@@ -16,7 +22,13 @@ export default function LoginForm() {
     resolver : zodResolver(loginSchema)
   });
 
-  const onSubmit: SubmitHandler<LoginInputs> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<LoginInputs> = (data) => {
+    socket.emit('message',{message: 'message received'}, (ack)=>{
+      console.log(ack)
+    })
+    console.log('event emitted')
+    dispatch(loginUserAsync(data))
+  }
   return (
     <Paper className={styles.container}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -50,7 +62,7 @@ export default function LoginForm() {
             Sign up
           </Typography>
         </Link>
-        <Button variant="outlined" type='submit' className={styles.button}>
+        <Button variant="outlined" type='submit' className={styles.button} loading={loading}>
           Login
         </Button>
       </form>

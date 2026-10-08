@@ -5,9 +5,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity.js';
 import { SessionModule } from '../sessions/sessions.module.js';
 import { AuthMiddleware } from '../middleware/auth.middleware.js';
+import { SessionsGateway } from '../sessions/sessions.gateway.js';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), SessionModule],
+  imports: [TypeOrmModule.forFeature([User]), SessionModule, SessionsGateway],
   controllers: [UsersController],
   providers: [UsersService],
 })

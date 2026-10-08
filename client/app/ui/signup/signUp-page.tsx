@@ -5,8 +5,11 @@ import Link from "next/link";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { signupInput, signupSchema } from "./signup.type";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useAppDispatch } from "@/features/store";
+import { registerUserAsync } from "@/features/auth/handle-auth/auth.action";
 
 export default function SignUpForm() {
+  const dispatch = useAppDispatch()
   const {
     register,
     handleSubmit,
@@ -16,7 +19,9 @@ export default function SignUpForm() {
     resolver: zodResolver(signupSchema),
   });
 
-  const onSubmit: SubmitHandler<signupInput> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<signupInput> = (data) => {
+    dispatch(registerUserAsync(data))
+  }
   return (
     <Paper className={styles.container}>
       <Typography variant="h5" className={styles.title}>

@@ -1,7 +1,10 @@
 
 import { configureStore } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from 'react-redux';
-import { combineReducers } from 'redux';
+import { combineReducers, Reducer, UnknownAction } from 'redux';
+import { persistStore, persistReducer } from 'redux-persist';
+import authReducer, { authTransform } from './auth/auth.slice'
+import storage from './storage';
 
 import {
   FLUSH,
@@ -11,12 +14,18 @@ import {
   PURGE,
   REGISTER,
 } from 'redux-persist';
-const rootReducer = combineReducers({ })
+const appReducer = combineReducers({
+  auth : authReducer
+});
+
+type AppState = ReturnType<typeof appReducer>;
+
+const rootReducer: Reducer<AppState, UnknownAction> = appReducer;
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist :['auth', 'feed', 'jobs', 'follow', 'notification', 'connection', 'room']
+  transforms :[authTransform]
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

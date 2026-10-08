@@ -1,8 +1,6 @@
 import {
   ConflictException,
-  Headers,
   Injectable,
-  Ip,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -12,12 +10,13 @@ import { Session } from './entities/session.entity.js';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UpdateSessionDto } from './Dto/update-session.dto.js';
 import { VerifyTokenDto } from './Dto/token-verify.dto.js';
-
+import { SessionsGateway } from './sessions.gateway.js';
 @Injectable()
 export class SessionService {
   constructor(
     @InjectRepository(Session)
     private readonly sessionRepository: Repository<Session>,
+    
   ) {}
 
   async create(createSessionDto: CreateSessionDto) {
@@ -50,7 +49,6 @@ export class SessionService {
         message: 'message not found',
       });
     const newsession = { ...session, ...updateSessionDto };
-    console.log(newsession);
     await this.sessionRepository.update(id, newsession);
     return newsession;
   }

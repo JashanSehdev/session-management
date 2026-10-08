@@ -6,6 +6,7 @@ import { UsersModule } from './users/users.module.js';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { SessionModule } from './sessions/sessions.module.js';
+import { SessionsGateway } from './sessions/sessions.gateway.js';
 
 @Module({
   imports: [UsersModule,
